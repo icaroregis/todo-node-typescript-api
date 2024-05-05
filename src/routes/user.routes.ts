@@ -7,12 +7,6 @@ import { authenticateJWT } from '../middleware/authenticateJWT';
 export const JWT_SECRET = '123456';
 
 export async function userRoutes(fastify: FastifyInstance) {
-  fastify.addHook('onRequest', (request, reply, done) => {
-    reply.header('Access-Control-Allow-Origin', '*');
-    reply.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    reply.header('Access-Control-Allow-Headers', 'Content-Type');
-    done();
-  });
   const userUseCase = new UserUseCase();
   fastify.post<{ Body: UserCreate }>('/register', async (request, reply) => {
     const { name, email, password } = request.body;

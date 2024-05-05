@@ -8,12 +8,6 @@ interface QueryParams {
 }
 
 export async function taskRoutes(fastify: FastifyInstance) {
-  fastify.addHook('onRequest', (request, reply, done) => {
-    reply.header('Access-Control-Allow-Origin', '*');
-    reply.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    reply.header('Access-Control-Allow-Headers', 'Content-Type');
-    done();
-  });
   const taskUseCase = new TaskUseCase();
 
   fastify.post<{ Body: TaskCreateData }>(
