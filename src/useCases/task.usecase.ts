@@ -1,4 +1,4 @@
-import { TasKRepository, Task, TaskCreateData } from '../interfaces/task.interface';
+import { TasKRepository, Task, TaskCreateData, TaskUpdateData } from '../interfaces/task.interface';
 import { TaskRepositoryPrisma } from '../repositories/task.repository';
 
 //Regras de negócio
@@ -25,6 +25,14 @@ class TaskUseCase {
 
   async deleteTask(taskId: string): Promise<void> {
     await this.taskRepository.deleteTask(taskId);
+  }
+
+  async updateTask(taskId: string, data: TaskUpdateData) {
+    const updatedTask = await this.taskRepository.updateTask(taskId, data);
+    if (!updatedTask) {
+      throw new Error('Task not found');
+    }
+    return updatedTask;
   }
 }
 

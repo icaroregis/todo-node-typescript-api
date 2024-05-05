@@ -1,5 +1,5 @@
 import { prisma } from '../database/prisma-client';
-import { TasKRepository, Task, TaskCreateData } from '../interfaces/task.interface';
+import { TasKRepository, Task, TaskCreateData, TaskUpdateData } from '../interfaces/task.interface';
 
 //Operações do banco de dados.
 class TaskRepositoryPrisma implements TasKRepository {
@@ -28,6 +28,25 @@ class TaskRepositoryPrisma implements TasKRepository {
     await prisma.task.delete({
       where: { id: taskId },
     });
+  }
+
+  async updateTask(taskId: string, data: TaskUpdateData): Promise<Task | null> {
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!existingTask) {
+      return null;
+    }
+
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        name: data.name,
+      },
+    });
+
+    return updatedTask;
   }
 }
 

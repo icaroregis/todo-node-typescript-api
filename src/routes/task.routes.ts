@@ -16,18 +16,22 @@ export async function taskRoutes(fastify: FastifyInstance) {
   });
   const taskUseCase = new TaskUseCase();
 
-  fastify.post<{ Body: TaskCreateData }>('/', async (request, reply) => {
-    const { name, userId } = request.body;
-    try {
-      const data = await taskUseCase.createTask({
-        name,
-        userId,
-      });
-      return reply.send(data);
-    } catch (error) {
-      reply.send(error);
-    }
-  });
+  fastify.post<{ Body: TaskCreateData }>(
+    '/',
+    { preHandler: authenticateJWT },
+    async (request, reply) => {
+      const { name, userId } = request.body;
+      try {
+        const data = await taskUseCase.createTask({
+          name,
+          userId,
+        });
+        return reply.send(data);
+      } catch (error) {
+        reply.send(error);
+      }
+    },
+  );
 
   fastify.get('/', async (request: FastifyRequest<{ Querystring: QueryParams }>, reply) => {
     const { userId }: QueryParams = request.query;
@@ -47,6 +51,23 @@ export async function taskRoutes(fastify: FastifyInstance) {
       try {
         await taskUseCase.deleteTask(taskId);
         reply.send({ message: 'Task deleted successfully' });
+      } catch (error) {
+        reply.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
+  );
+
+  fastify.put<{ Params: { taskId: string }; Body: TaskCreateData }>(
+    '/:taskId',
+    { preHandler: authenticateJWT },
+    async (request, reply) => {
+      const { taskId } = request.params;
+      const { name } = request.body;
+      try {
+        const updatedTask = await taskUseCase.updateTask(taskId, {
+          name,
+        });
+        reply.status(204).send(updatedTask);
       } catch (error) {
         reply.status(500).send({ error: 'Internal Server Error' });
       }

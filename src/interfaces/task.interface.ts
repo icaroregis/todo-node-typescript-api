@@ -10,8 +10,13 @@ export interface TaskCreateData {
   userId: string;
 }
 
+export interface TaskUpdateData {
+  name: string;
+}
+
 export interface TasKRepository {
   create(data: TaskCreateData): Promise<Task>;
   getAllTasks(userId: string): Promise<Task[]>;
   deleteTask(taskId: string): Promise<void>;
+  updateTask(taskId: string, data: TaskUpdateData): Promise<Task | null>;
 }
