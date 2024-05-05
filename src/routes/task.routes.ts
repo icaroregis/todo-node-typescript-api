@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { TaskUseCase } from '../useCases/task.usecase';
-import { Task, TaskCreateData } from '../interfaces/task.interface';
 import { authenticateJWT } from '../middleware/authenticateJWT';
+import { Task, TaskCreateData } from '../interfaces/task.interface';
 
 interface QueryParams {
   userId: string;
@@ -26,7 +26,7 @@ export async function taskRoutes(fastify: FastifyInstance) {
           name,
           userId,
         });
-        return reply.send(data);
+        return reply.status(201).send(data);
       } catch (error) {
         reply.send(error);
       }
