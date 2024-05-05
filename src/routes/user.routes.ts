@@ -39,7 +39,7 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get('/', async (request, reply) => {
+  fastify.get('/', { preHandler: authenticateJWT }, async (request, reply) => {
     try {
       const users = await userUseCase.getAllUsers();
       reply.status(200).send(users);
@@ -48,13 +48,17 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.delete<{ Params: { id: string } }>('/:id', async (request, reply) => {
-    const userId = request.params.id;
-    try {
-      await userUseCase.deleteUser(userId);
-      reply.status(200).send({ message: 'User deleted successfully' });
-    } catch (error) {
-      reply.status(500).send({ error: 'Internal Server Error' });
-    }
-  });
+  fastify.delete<{ Params: { id: string } }>(
+    '/:userId',
+    { preHandler: authenticateJWT },
+    async (request, reply) => {
+      const userId = request.params.id;
+      try {
+        await userUseCase.deleteUser(userId);
+        reply.status(200).send({ message: 'User deleted successfully' });
+      } catch (error) {
+        reply.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
+  );
 }

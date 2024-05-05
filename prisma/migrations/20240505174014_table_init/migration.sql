@@ -22,3 +22,6 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tasks_id_key" ON "tasks"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tasks_name_key" ON "tasks"("name");
