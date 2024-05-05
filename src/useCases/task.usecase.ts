@@ -10,12 +10,15 @@ class TaskUseCase {
   }
 
   async createTask({ name, userId }: TaskCreateData) {
-    const contact = await this.taskRepository.create({
-      name,
-      userId,
-    });
+    const existingTask = await this.taskRepository.getAllTasks(userId);
+    const taskExists = existingTask.some((task) => task.name === name);
 
-    return contact;
+    if (taskExists) {
+      throw new Error('A task with the same name already exists for this user');
+    }
+
+    const task = await this.taskRepository.create({ name, userId });
+    return task;
   }
 
   async getAllTasks(userId: string): Promise<Task[]> {
