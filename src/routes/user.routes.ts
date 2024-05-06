@@ -23,12 +23,12 @@ export async function userRoutes(fastify: FastifyInstance) {
     try {
       const user = await userUseCase.findByEmail(email);
       if (!user) {
-        reply.status(401).send({ error: 'Invalid credentials' });
+        reply.status(401).send({ error: 'Invalid email or password' });
         return;
       }
 
       if (password !== user.password) {
-        reply.status(401).send({ error: 'Invalid credentials' });
+        reply.status(401).send({ error: 'Invalid email or password' });
         return;
       }
 
